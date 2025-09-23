@@ -1,0 +1,107 @@
+$date
+	Mon Sep 22 16:30:19 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	10ps
+$end
+$scope module fa_vr_tb $end
+$var wire 1 ! test_sum $end
+$var wire 1 " test_c_out $end
+$var reg 1 # test_a $end
+$var reg 1 $ test_b $end
+$var reg 1 % test_c_in $end
+$scope module fa1 $end
+$var wire 1 # a $end
+$var wire 1 $ b $end
+$var wire 1 % c_in $end
+$var wire 1 " c_out $end
+$var wire 1 ! sum $end
+$var wire 1 & s1 $end
+$var wire 1 ' c2 $end
+$var wire 1 ( c1 $end
+$scope module semisumador1 $end
+$var wire 1 # a $end
+$var wire 1 $ b $end
+$var wire 1 ( carry $end
+$var wire 1 & sum $end
+$upscope $end
+$scope module semisumador2 $end
+$var wire 1 & a $end
+$var wire 1 % b $end
+$var wire 1 ' carry $end
+$var wire 1 ! sum $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+x(
+x'
+x&
+0%
+0$
+0#
+x"
+x!
+$end
+#100
+0"
+0'
+0(
+0&
+#200
+0!
+#2000
+1%
+#2100
+1!
+#4000
+0%
+1$
+#4100
+0!
+1&
+#4200
+1!
+#6000
+1%
+#6100
+1"
+0!
+1'
+#8000
+0%
+0$
+1#
+#8100
+0"
+1!
+0'
+#10000
+1%
+#10100
+1"
+0!
+1'
+#12000
+0%
+1$
+#12100
+1!
+0'
+0&
+1(
+#12200
+0!
+#14000
+1%
+#14100
+1!
+#16000
