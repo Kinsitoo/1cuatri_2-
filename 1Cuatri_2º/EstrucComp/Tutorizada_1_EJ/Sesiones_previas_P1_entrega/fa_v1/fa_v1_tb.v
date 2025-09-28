@@ -5,7 +5,7 @@
 module fa_v1_tb;
 //declaracion de se�ales
 
-reg test_a, test_b, test_c_in; //las se�ales de entrada al semisumador. Se han declarado reg porque queremos inicializarlas
+reg test_a, test_b, test_c_in; //las se�ales de entrada al sumador. Se han declarado reg porque queremos inicializarlas
 wire test_sum, test_c_out; //se�ales de salida, se declaran como wire porque sus valores se fijan por el sumador
 
 //instancia del modulo a testear, con notaci�n de posiciones de argumentos 
