@@ -1,12 +1,12 @@
 module cl(output wire out, input wire a, b, input wire [1:0] S);
 
-  always @(a, b) begin
-    case (S)
-    2'b00 : out = a & b;
-    2'b01 : out = a | b;
-    2'b10 : out = a ^ b;
-    2'b11 : out = ~a;
-    default : out = a;
-  end
+  wire sA, sO, sX, sN;
+
+  and and1(sA, a, b);
+  or or1(sO, a, b);
+  xor xor1(sX, a, b);
+  not no1(sN, a);
+
+  mux4_1 mux1(out, sA, sO, sX, sN, S);
 
 endmodule
