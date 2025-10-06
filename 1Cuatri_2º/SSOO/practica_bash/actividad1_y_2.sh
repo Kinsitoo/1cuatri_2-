@@ -20,7 +20,8 @@ TEXT_RESET=$'\x1b[0m'
 
 system_info()
 {
-  echo "${TEXT_ULINE}Versión del sistema${TEXT_RESET}"
+  echo
+  echo "${TEXT_BOLD}Versión del sistema${TEXT_RESET}"
   echo
   uname -a
 }
@@ -28,7 +29,8 @@ system_info()
 
 show_uptime()
 {
-  echo "${TEXT_ULINE}Tiempo de encendido del sistema$TEXT_RESET"
+  echo
+  echo "${TEXT_BOLD}Tiempo de encendido del sistema$TEXT_RESET"
   echo
   uptime
   echo
@@ -37,7 +39,7 @@ show_uptime()
 
 drive_space()
 {
-  echo "${TEXT_ULINE}Espacio ocupado en las particiones$TEXT_RESET"
+  echo "${TEXT_BOLD}Espacio ocupado en las particiones$TEXT_RESET"
   echo
   df
   echo
@@ -47,14 +49,19 @@ drive_space()
 home_space()
 {
   echo
-  echo "${TEXT_ULINE}Muestra espacio ocupado dependiendo si eres root o no$TEXT_RESET"
+  echo "${TEXT_BOLD}Muestra espacio ocupado dependiendo si eres root o no$TEXT_RESET"
   if [ $USER != root ]; then
-    du -s /home/$USER;
+    echo "${TEXT_GREEN}No eres root${TEXT_RESET}"
+    du -sh /home/$USER;
   elif [ $USER == root ]; then 
-    du -h /home/* | sort -nr; 
+    echo "${TEXT_BOLD}Eres root${TEXT_RESET}"
+    du -sh /home/*/ | sort -hr; 
   fi
-
 }
+
+#Modificación
+
+
 
 ##### Programa principal
 
@@ -68,4 +75,7 @@ system_info
 show_uptime
 drive_space
 home_space
+
+
+
 
