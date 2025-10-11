@@ -2,6 +2,8 @@
 
 # sysinfo - Un script que informa del estado del sistema
 
+#Autor: Kin Daniel Fortuno Pontillas
+#alu0101679112
 
 ##### Constantes
 
@@ -61,7 +63,17 @@ home_space()
 
 #Modificación
 
+contar_root_procesos()
+{
+  echo
+  echo "${TEXT_BOLD}Numero de procesos que está ejecutando root actualmente$TEXT_RESET"
 
+  # Contar procesos cuyo propietario es root
+  echo "El usuario 'root' está ejecutando: "
+
+  ps -u 'root' | wc -l
+
+}
 
 ##### Programa principal
 
@@ -75,6 +87,7 @@ system_info
 show_uptime
 drive_space
 home_space
+contar_root_procesos
 
 
 
