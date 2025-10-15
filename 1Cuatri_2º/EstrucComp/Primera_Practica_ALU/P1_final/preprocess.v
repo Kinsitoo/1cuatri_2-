@@ -33,3 +33,8 @@ A and B     1     0     0     X       1       1       0
 a or B      1     0     1     X       1       1       0
 A xor B     1     1     0     X       1       1       0
 Not A       1     1     1     X       X       1       X
+A+A+c_in                      X       1       0       0
+B+1+c_in                      1       0       1       0
+a+c_in                        0       0       0       0
+b+c_in                        0       0       1       0
+*/
