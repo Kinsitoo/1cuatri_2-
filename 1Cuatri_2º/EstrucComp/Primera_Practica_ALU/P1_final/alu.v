@@ -10,9 +10,10 @@ module alu(output wire [3:0] R, output wire zero, carry, sign, input wire [3:0] 
 
   assign zero = R ? 1'b0 : 1'b1;
   assign sign = R[3];
+  
+endmodule
 
   // iverilog -o test_alu alu_tb.v compl1.v mux2_4.v preprocess.v sum4_v1.v ul4.v alu.v cl.v fa.v mux4_1.v
   // vvp test_alu
   // gtkwave alu.vcd
 
-endmodule

@@ -86,6 +86,10 @@ filter(){
   fi
 }
 
+offline() {
+
+}
+
 
 cat << _EOF_
 $TEXT_BOLD$TITLE$TEXT_RESET
@@ -104,6 +108,8 @@ if [[ -z "$1" ]]; then
       -f)
         filter
         ;;
+      -o)
+
       *) 
         echo "Opcion no soportada" >&2
         exit 1
