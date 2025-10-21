@@ -95,6 +95,7 @@ interactive() {
                 clear
                 exit 0  # No sobrescribir → salir
             fi
+          clear
         fi
 
         # Guardar (sobrescribir)
@@ -112,7 +113,8 @@ interactive() {
 }
 
 
-#Modificación
+
+#Modificación Semana 4
 
 contar_root_procesos()
 {
@@ -126,14 +128,48 @@ contar_root_procesos()
 
 }
 
+#Modificacion Semana 5
+
+contar_procesos_usuario() {
+  usuario="$1"
+
+  # Comprobar si se ha pasado un usuario
+  if [[ -z "$usuario" ]]; then
+    echo "Error: Debes especificar un nombre de usuario tras la opción -fu" >&2
+    exit 1
+  fi
+
+  # Comprobar si el usuario existe en el sistema
+  if ! id "$usuario" &>/dev/null; then
+    echo "Error: El usuario '$usuario' no existe en el sistema." >&2
+    exit 1
+  fi
+
+  echo
+
+  # Contar procesos del usuario
+  num_proc=$(ps -u "$usuario" --no-headers | wc -l)
+
+  # Proceso con más uso de CPU
+  top_proc=$(ps -u "$usuario" --sort=-%cpu -o comm= | head -n 1)
+
+  echo "Número total de procesos: $num_proc"
+  if [[ -n "$top_proc" ]]; then
+    echo "Proceso que más CPU consume: $top_proc"
+  else
+    echo "El usuario no tiene procesos en ejecución."
+  fi
+  echo
+}
+
 #Opciones por defecto.
   interactive=0
-    filename=~/sysinfo.txt
+  filename=~/sysinfo.txt
 
 ##### Programa principal
 
 usage() {
-  echo "usage: sysinfo [-f filename] [-i] [-h]"
+  echo "usage: sysinfo [-f filename] [-i] [-h] [-fu usuario]"
 }
 
 write_page() {
@@ -181,11 +217,20 @@ while [ "$1" != "" ]; do
             usage
             exit 0
             ;;
+        -fu ) #Modi Semana 5
+            shift 
+              if [ -z "$1" ]; then
+                echo "Error: La opción -fu requiere un nombre de usuario" >&2
+                exit 1
+              fi
+            contar_procesos_usuario "$1"
+            exit 0
+            ;;    
         -* )
             echo "Opción no válida: $1" >&2
             usage
             exit 1
-            ;;
+            ;;      
         * )
             # Cualquier argumento no reconocido es un error
             echo "Argumento no válido: $1" >&2
@@ -202,9 +247,6 @@ else
     # Modo NO interactivo: Generar el informe del sistema y guardarlo en el archivo indicado en $filename
     echo "Se ha guardado el informe del sistema en "$filename" "
     write_page > $filename
+    exit 0
 fi
-
-
-
-
 
