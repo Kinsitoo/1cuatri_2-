@@ -11,8 +11,21 @@ usage() {
 
 }
 
+
+
+
 Sin_opcion(){
 
+  if [ -n "${OPEN_FILES_FOLDER}" ]; then 
+    echo "OPEN_FILES_FOLDER está definida: $OPEN_FILES_FOLDER"
+  if [ ! -d "$OPEN_FILES_FOLDER" ]; then
+    echo "Error: Ruta no existe o no es un directorio" >&2
+    exit 1
+  fi
+  echo
+  echo "Solo se contarán los ficheros dentro de ese directorio"
+  echo
+  
   for user in $usuario; do
     count=$(lsof -u $user -F t | grep -c '^tREG$')
     echo "Usuario: $user UID: $uid PID: $pid Count:$count"
@@ -26,7 +39,7 @@ error_exit() {
 }
 
 filtro() {
-  if [ $1 -eq 0 ]; then
+  if [ $# -lt 1 ]; then
     usage
     exit 1
   else
@@ -37,7 +50,7 @@ filtro() {
 if [ $# -eq 0 ]; then
   Sin_opcion
 else
-  while [ $1 -gt 0 ]; do
+  while [ $# -gt 0 ]; do
     case $1 in
       -h | --help)
         usage
