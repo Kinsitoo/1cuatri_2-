@@ -1,5 +1,5 @@
 $date
-	Sun Nov 16 13:32:46 2025
+	Sun Nov 16 15:06:39 2025
 $end
 $version
 	Icarus Verilog
@@ -50,66 +50,68 @@ $var wire 4 ; WA3 [3:0] $end
 $var wire 1 $ clk $end
 $var wire 1 ( we3 $end
 $var wire 8 < WD3 [7:0] $end
-$var wire 8 = RD2 [7:0] $end
-$var wire 8 > RD1 [7:0] $end
+$var wire 1 = R_debug $end
+$var wire 8 > RD2 [7:0] $end
+$var wire 8 ? RD1 [7:0] $end
 $upscope $end
 $scope module PC $end
 $var wire 1 $ clk $end
 $var wire 1 % reset $end
-$var wire 10 ? D [9:0] $end
-$var parameter 32 @ WIDTH $end
-$var reg 10 A Q [9:0] $end
+$var wire 10 @ D [9:0] $end
+$var parameter 32 A WIDTH $end
+$var reg 10 B Q [9:0] $end
 $upscope $end
 $scope module memoria $end
-$var wire 10 B Address [9:0] $end
-$var wire 16 C Data [15:0] $end
+$var wire 10 C Address [9:0] $end
+$var wire 16 D Data [15:0] $end
 $var wire 1 $ clk $end
 $upscope $end
 $scope module mux1 $end
-$var wire 10 D D1 [9:0] $end
+$var wire 10 E D1 [9:0] $end
 $var wire 1 & s $end
-$var wire 10 E Y [9:0] $end
-$var wire 10 F D0 [9:0] $end
-$var parameter 32 G WIDTH $end
+$var wire 10 F Y [9:0] $end
+$var wire 10 G D0 [9:0] $end
+$var parameter 32 H WIDTH $end
 $upscope $end
 $scope module mux3 $end
-$var wire 8 H D0 [7:0] $end
-$var wire 8 I D1 [7:0] $end
+$var wire 8 I D0 [7:0] $end
+$var wire 8 J D1 [7:0] $end
 $var wire 1 ' s $end
-$var wire 8 J Y [7:0] $end
-$var parameter 32 K WIDTH $end
+$var wire 8 K Y [7:0] $end
+$var parameter 32 L WIDTH $end
 $upscope $end
 $scope module sumador $end
-$var wire 10 L A [9:0] $end
-$var wire 10 M B [9:0] $end
-$var wire 10 N Y [9:0] $end
+$var wire 10 M A [9:0] $end
+$var wire 10 N B [9:0] $end
+$var wire 10 O Y [9:0] $end
 $upscope $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b1000 K
-b1010 G
-b1010 @
+b1000 L
+b1010 H
+b1010 A
 $end
 #0
 $dumpvars
+b1 O
 b1 N
-b1 M
-b0 L
+b0 M
+b0 K
 b0 J
 b0 I
-b0 H
+b1 G
 b1 F
-b1 E
-b101 D
-b100000000000101 C
+b101 E
+b100000000000101 D
+b0 C
 b0 B
-b0 A
-b1 ?
+b1 @
+b0 ?
 b0 >
-b0 =
+0=
 b0 <
 b0 ;
 b0 :
@@ -146,42 +148,42 @@ $end
 #2000
 b0 "
 b0 4
-b0 D
+b0 E
 b0 9
 b0 2
 b10 0
-b10 ?
-b10 E
-b0 1
-b0 C
-b10 ,
+b10 @
 b10 F
-b10 N
+b0 1
+b0 D
+b10 ,
+b10 G
+b10 O
 b1 /
-b1 A
 b1 B
-b1 L
+b1 C
+b1 M
 1$
 #3000
 0$
 #4000
 b10000 "
 b10000 4
-b101 D
+b101 E
 b101 9
 b101 2
 b100000000000101 1
-b100000000000101 C
+b100000000000101 D
 b1 ,
-b1 F
-b1 N
+b1 G
+b1 O
 b0 /
-b0 A
 b0 B
-b0 L
+b0 C
+b0 M
 b101 0
-b101 ?
-b101 E
+b101 @
+b101 F
 1$
 1&
 1(
@@ -190,85 +192,85 @@ b101 E
 0$
 #6000
 b10 0
-b10 ?
-b10 E
+b10 @
+b10 F
 b100 "
 b100 4
-b10 D
+b10 E
 b10 9
 b10 2
 b1000000000010 1
-b1000000000010 C
+b1000000000010 D
 b110 ,
-b110 F
-b110 N
+b110 G
+b110 O
 b101 /
-b101 A
 b101 B
-b101 L
+b101 C
+b101 M
 1$
 #7000
 0$
 #8000
 b0 0
-b0 ?
-b0 E
+b0 @
+b0 F
 b0 "
 b0 4
-b0 D
+b0 E
 b0 9
 b0 2
 b0 1
-b0 C
+b0 D
 b11 ,
-b11 F
-b11 N
+b11 G
+b11 O
 b10 /
-b10 A
 b10 B
-b10 L
+b10 C
+b10 M
 1$
 #9000
 0$
 #10000
 b101 0
-b101 ?
-b101 E
+b101 @
+b101 F
 b10000 "
 b10000 4
-b101 D
+b101 E
 b101 9
 b101 2
 b100000000000101 1
-b100000000000101 C
+b100000000000101 D
 b1 ,
-b1 F
-b1 N
+b1 G
+b1 O
 b0 /
-b0 A
 b0 B
-b0 L
+b0 C
+b0 M
 1$
 #11000
 0$
 #12000
 b10 0
-b10 ?
-b10 E
+b10 @
+b10 F
 b100 "
 b100 4
-b10 D
+b10 E
 b10 9
 b10 2
 b1000000000010 1
-b1000000000010 C
+b1000000000010 D
 b110 ,
-b110 F
-b110 N
+b110 G
+b110 O
 b101 /
-b101 A
 b101 B
-b101 L
+b101 C
+b101 M
 1$
 1)
 b10 #
@@ -279,22 +281,22 @@ b10 5
 0$
 #14000
 b0 0
-b0 ?
-b0 E
+b0 @
+b0 F
 b0 "
 b0 4
-b0 D
+b0 E
 b0 9
 b0 2
 b0 1
-b0 C
+b0 D
 b11 ,
-b11 F
-b11 N
+b11 G
+b11 O
 b10 /
-b10 A
 b10 B
-b10 L
+b10 C
+b10 M
 1$
 b11 #
 b11 *
@@ -303,15 +305,15 @@ b11 5
 0$
 #16000
 b100 ,
-b100 F
-b100 N
+b100 G
+b100 O
 b11 /
-b11 A
 b11 B
-b11 L
+b11 C
+b11 M
 b100 0
-b100 ?
-b100 E
+b100 @
+b100 F
 1$
 0)
 0&
@@ -324,21 +326,21 @@ b0 5
 #18000
 b10000 "
 b10000 4
-b101 D
+b101 E
 b101 9
 b101 2
 b100000000000101 1
-b100000000000101 C
+b100000000000101 D
 b1 ,
-b1 F
-b1 N
+b1 G
+b1 O
 b0 /
-b0 A
 b0 B
-b0 L
+b0 C
+b0 M
 b101 0
-b101 ?
-b101 E
+b101 @
+b101 F
 1$
 1)
 1&
@@ -350,22 +352,22 @@ b10 5
 0$
 #20000
 b10 0
-b10 ?
-b10 E
+b10 @
+b10 F
 b100 "
 b100 4
-b10 D
+b10 E
 b10 9
 b10 2
 b1000000000010 1
-b1000000000010 C
+b1000000000010 D
 b110 ,
-b110 F
-b110 N
+b110 G
+b110 O
 b101 /
-b101 A
 b101 B
-b101 L
+b101 C
+b101 M
 1$
 b11 #
 b11 *
@@ -374,22 +376,22 @@ b11 5
 0$
 #22000
 b0 0
-b0 ?
-b0 E
+b0 @
+b0 F
 b0 "
 b0 4
-b0 D
+b0 E
 b0 9
 b0 2
 b0 1
-b0 C
+b0 D
 b11 ,
-b11 F
-b11 N
+b11 G
+b11 O
 b10 /
-b10 A
 b10 B
-b10 L
+b10 C
+b10 M
 1$
 0)
 b0 #
@@ -400,72 +402,72 @@ b0 5
 0$
 #24000
 b100 ,
-b100 F
-b100 N
+b100 G
+b100 O
 b11 /
-b11 A
 b11 B
-b11 L
+b11 C
+b11 M
 b100 0
-b100 ?
-b100 E
+b100 @
+b100 F
 1$
 0&
 #25000
 0$
 #26000
 b101 0
-b101 ?
-b101 E
-b101 ,
+b101 @
 b101 F
-b101 N
+b101 ,
+b101 G
+b101 O
 b100 /
-b100 A
 b100 B
-b100 L
+b100 C
+b100 M
 1$
 #27000
 0$
 #28000
 b100 "
 b100 4
-b10 D
+b10 E
 b10 9
 b10 2
 b110 0
-b110 ?
-b110 E
-b1000000000010 1
-b1000000000010 C
-b110 ,
+b110 @
 b110 F
-b110 N
+b1000000000010 1
+b1000000000010 D
+b110 ,
+b110 G
+b110 O
 b101 /
-b101 A
 b101 B
-b101 L
+b101 C
+b101 M
 1$
 #29000
 0$
 #30000
-b10 I
-b100001 D
+b10 J
+b100001 E
 b10 ;
 b1 9
 b100001 2
 b111 0
-b111 ?
-b111 E
-b1000000100001 1
-b1000000100001 C
-b111 ,
+b111 @
 b111 F
-b111 N
+b1000000100001 1
+b1000000100001 D
+b111 ,
+b111 G
+b111 O
 b110 /
-b110 A
 b110 B
-b110 L
+b110 C
+b110 M
 1$
 #31000
 0$
