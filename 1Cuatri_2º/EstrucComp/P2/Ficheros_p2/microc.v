@@ -3,6 +3,7 @@ module microc(output wire [5:0] Opcode, output wire z, input wire clk, reset, s_
 wire [7:0] rd1, rd2, wd3, alu_out, inm;    
 wire [15:0] instruccion;
 wire [9:0] pc_out, pc_in, dir_salto, mux_out, sum_out;
+wire zero_flag_alu;
 
 assign dir_salto = instruccion[9:0];
 
@@ -21,6 +22,8 @@ mux2 #(10) mux1(pc_in, sum_out, instruccion[9:0], s_inc);
 
 // Mux de la derecha
 mux2 #(8) mux3(wd3, alu_out, instruccion[11:4], s_inm);
+
+ffd FFZ(clk, reset, zero_flag_alu, wez, z);
 
 assign Opcode = instruccion[15:10];
 

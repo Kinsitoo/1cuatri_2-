@@ -23,9 +23,9 @@ microc micro(Opcode, z, clk, reset, s_inc, s_inm, we3, wez, Op);
 // Generación de reloj clk
 always
 begin
-  clk=1;
-  #10;
   clk=0;
+  #10;
+  clk=1;
   #10;
 end
 
@@ -46,53 +46,79 @@ end
       reset = 1'b1;
       #5; // Espera un poco antes de desactivar reset
       reset = 1'b0;
-      // Esperamos a que el PC salte a la dirección de 'Start' (0x0005) según el jmp en 0x0000
-      #25; // Ajuste para que PC esté en 0x0005 al inicio del primer ciclo simulado de la UC.
 
        // --- Simulación del programa de ejemplo ---
-      // Ciclo 1: PC=0x0000 -> j Start (Opcode: 0100_0000_0000_0101 -> Opcode=0x10)
-      #10; s_inc = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; #10;
+    // *** CICLO 1: PC=0x000 (j Start) -> Salto a 0x005 ***
+    #10; 
+    // Opcode 000100 (j). Control: s_inc=0 (Salto). No escribe nada.
+    s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000; 
 
-      // Ciclo 2: PC=0x0005 -> li#0 R2 (Opcode: 0001_0000_0000_0010 -> Opcode=0x04)
-      #10; s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0; #10;
+    // *** CICLO 2: PC=0x005 (li #0, R2) -> R2 = 0 ***
+    #20; 
+    // Opcode 0001 (li). Control: s_inc=1 (PC+1), s_inm=1 (Inm), we3=1 (Escribe R2).
+    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000; 
 
-      // Ciclo 3: PC=0x0006 -> li#2 R1 (Opcode: 0001_0000_0010_0001 -> Opcode=0x04)
-      #10; s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0; #10;
+    // *** CICLO 3: PC=0x006 (li #2, R1) -> R1 = 2 ***
+    #20;
+    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R1).
+    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000; 
+    
+    // *** CICLO 4: PC=0x007 (li #4, R3) -> R3 = 4 ***
+    #20;
+    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R3).
+    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000;
+    
+    // *** CICLO 5: PC=0x008 (li #1, R4) -> R4 = 1 ***
+    #20;
+    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R4).
+    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000;
 
-      // Ciclo 4: PC=0x0007 -> li#4 R3 (Opcode: 0001_0000_0100_0011 -> Opcode=0x04)
-      #10; s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0; #10;
+    // --- INICIO BUCHE (Iteración 1) ---
 
-      // Ciclo 5: PC=0x0008 -> li#1 R4 (Opcode: 0001_0000_0001_0100 -> Opcode=0x04)
-      #10; s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0; #10;
+    // *** CICLO 6: PC=0x009 (add R2, R3, R2) -> R2 = 0 + 4 = 4. Z=0. ***
+    #20;
+    // Opcode 1010 (add). Control: s_inm=0 (ALU), we3=1, wez=1 (Actualiza Z). Op=3'b010 (ADD).
+    s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b010; 
 
-      // Ciclo 6: PC=0x0009 -> add R2 R3 R2 (Opcode: 1010_0010_0011_0010 -> Opcode=0x28)
-      #10; s_inm = 1'b0; we3 = 1'b1; Op = 3'b010; s_inc = 1'b1; wez = 1'b1; #10;
+    // *** CICLO 7: PC=0x00A (sub R1, R4, R1) -> R1 = 2 - 1 = 1. Z=0. ***
+    #20;
+    // Opcode 1011 (sub). Control: s_inm=0, we3=1, wez=1. Op=3'b011 (SUB).
+    s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b011; 
 
-      // Ciclo 7: PC=0x000A -> sub R1 R4 R1 (Opcode: 1011_0001_0100_0001 -> Opcode=0x2C)
-      #10; s_inm = 1'b0; we3 = 1'b1; Op = 3'b011; s_inc = 1'b1; wez = 1'b1; #10;
+    // *** CICLO 8: PC=0x00B (jnz Iter) -> Z=0. Salta a 0x009. ***
+    #20;
+    // Opcode 001010 (jnz). Comprueba Z. Z=0 -> s_inc=0 (Salto). No escribe nada.
+    s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000; 
+    
+    // --- BUCHE (Iteración 2) ---
 
-      // Ciclo 8: PC=0x000B -> jnz Iter (Opcode: 0100_1000_0000_1001 -> Opcode=0x12)
-      #10; s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; #10;
+    // *** CICLO 9: PC=0x009 (add R2, R3, R2) -> R2 = 4 + 4 = 8. Z=0. ***
+    #20;
+    s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b010; 
+    
+    // *** CICLO 10: PC=0x00A (sub R1, R4, R1) -> R1 = 1 - 1 = 0. Z=1. ***
+    #20;
+    s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b011;
 
-      // Ciclo 9: PC=0x0009 -> add R2 R3 R2 (Opcode: 1010_0010_0011_0010)
-      #10; s_inm = 1'b0; we3 = 1'b1; Op = 3'b010; s_inc = 1'b1; wez = 1'b1; #10;
+    // *** CICLO 11: PC=0x00B (jnz Iter) -> Z=1. NO salta, PC+1 (0x00C). ***
+    #20;
+    // Z=1 -> s_inc=1 (PC+1).
+    s_inc = 1; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000;
 
-      // Ciclo 10: PC=0x000A -> sub R1 R4 R1 (Opcode: 1011_0001_0100_0001)
-      #10; s_inm = 1'b0; we3 = 1'b1; Op = 3'b011; s_inc = 1'b1; wez = 1'b1; #10;
+    // --- FIN BUCHE (Bucle Infinito) ---
 
-      // Ciclo 11: PC=0x000B -> jnz Iter (Opcode: 0100_1000_0000_1001)
-      #10; s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b1; wez = 1'b0; #10;
+    // *** CICLO 12: PC=0x00C (j Fin) -> Salta a 0x00C (bucle infinito). ***
+    #20;
+    // Opcode 000100 (j) -> s_inc=0.
+    s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000;
 
-      // Ciclo 12: PC=0x000C -> j Fin (Opcode: 0100_0000_0000_1100 -> Opcode=0x10)
-      #10; s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; #10;
-
-      // Ciclo 13: PC=0x000C -> j Fin (Opcode: 0100_0000_0000_1100)
-      #10; s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; #10;
-
-      // Ciclo 14: PC=0x000C -> j Fin (Opcode: 0100_0000_0000_1100)
-      #10; s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; #10;
-
-      $finish;
-    end
+    // *** CICLO 13: PC=0x00C (j Fin) -> Se mantiene el bucle. ***
+    #20;
+    s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000;
+    
+    // Terminamos la simulación
+    #20;
+  $finish;
+end
 
 endmodule
