@@ -9,6 +9,16 @@ wire [5:0] Opcode;
 
 // Instanciación del camino de datos
 microc micro(Opcode, z, clk, reset, s_inc, s_inm, we3, wez, Op);
+// Opcode Salida Opcode (no la usamos en el testbench)
+// z Salida flag zero (no la usamos en el testbench)
+// clk Entrada clk
+// reset Entrada reset
+// s_inc Entrada control PC (proveniente de la UC simulada)
+// s_inm Entrada control mux escritura (proveniente de la UC simulada)
+// we3 Entrada habilitación escritura banco (proveniente de la UC simulada)
+// wez Entrada habilitación escritura flag z (proveniente de la UC simulada)
+// Op Entrada operación ALU (proveniente de la UC simulada)
+
 
 // Generación de reloj clk
 always
@@ -32,149 +42,139 @@ end
       wez = 1'b0; // Aunque no se use internamente
       Op = 3'b000;
 
-      // --- Inicio de la simulación ---
-      reset = 1'b1; // Reset activo
-      #5; // Espera un poco
-      reset = 1'b0; // Fin del reset
-      // PC ahora debería estar en 0x0000, listo para leer la primera instrucción del programa
+     // --- Reset inicial ---
+      reset = 1'b1;
+      #5; // Espera un poco antes de desactivar reset
+      reset = 1'b0;
+      // Esperamos a que el PC salte a la dirección de 'Start' (0x0005) según el jmp en 0x0000
+      #25; // Ajuste para que PC esté en 0x0005 al inicio del primer ciclo simulado de la UC.
 
-      // --- Simulación del programa paso a paso ---
-      // El testbench genera las señales de control para cada instrucción,
-      // simulando el comportamiento de la Unidad de Control.
+      // --- Simulación del programa de ejemplo ---
+      // El programa comienza en 0x0005 (Start: li#0 R2)
+      // Ciclo 1: PC=0x0005 -> li#0 R2 (Opcode: 0001_0000_0000_0010 -> Opcode=0x04, C=0x0, Rd=2)
+      #10; // Espera a mitad del ciclo para simular decodificación
+      // Instrucción 'li': Carga constante inmediata. Selecciona inmediato para escribir, habilita escritura en banco, no actualiza z, PC avanza.
+      // s_inm=1: Elige la constante de la instrucción (instruccion[11:4]=0x00) para wd3.
+      // we3=1: Habilita la escritura en el banco de registros.
+      // Op=000: No relevante para 'li', puede ser cualquier valor, aquí 000.
+      // s_inc=1: Elige PC+1 para el próximo valor del PC.
+      // wez=0: No actualiza el flag z.
+      s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0;
+      #10; // Finaliza ciclo 1
 
-      // Ciclo 1: Instrucción en PC=0x0000: j Start (Opcode 010000)
-      // La UC simulada sabe que está en PC=0x0000 y que la instrucción es un salto.
-      // Debe generar señales para que el PC vaya a la dirección de destino (0x0005).
-      s_inc = 1'b0; // s_inc=0 para que el PC tome la dirección de salto (D = 0x0005)
-      s_inm = 1'b0; // No escribe inmediato
-      we3 = 1'b0;   // No escribe en banco de regs
-      Op = 3'b000;  // Irrelevante para saltos
-      wez = 1'b0;   // Irrelevante para saltos
-      $display("Ciclo 1: j Start. PC debería apuntar a 0x0005 al final del ciclo.");
-      #20; // Finaliza ciclo 1
+      // Ciclo 2: PC=0x0006 -> li#2 R1 (Opcode: 0001_0000_0010_0001 -> Opcode=0x04, C=0x2, Rd=1)
+      #10;
+      // Instrucción 'li': Igual que ciclo 1, pero carga C=0x2 en Rd=1.
+      s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0;
+      #10; // Finaliza ciclo 2
 
-      // Ciclo 2: Instrucción en PC=0x0005: li#0 R2 (Opcode 000100)
-      s_inc = 1'b1; // s_inc=1 para que PC vaya a PC+1 (0x0006)
-      s_inm = 1'b1; // s_inm=1 para que el mux escriba la constante C
-      we3 = 1'b1;   // we3=1 para escribir en el banco de registros
-      Op = 3'b000;  // Irrelevante para li
-      wez = 1'b0;   // Irrelevante para li
-      $display("Ciclo 2: li#0 R2. R2 <- 0.");
-      #20; // Finaliza ciclo 2
+      // Ciclo 3: PC=0x0007 -> li#4 R3 (Opcode: 0001_0000_0100_0011 -> Opcode=0x04, C=0x4, Rd=3)
+      #10;
+      // Instrucción 'li': Igual que ciclo 1, pero carga C=0x4 en Rd=3.
+      s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0;
+      #10; // Finaliza ciclo 3
 
-      // Ciclo 3: Instrucción en PC=0x0006: li#2 R1 (Opcode 000100)
-      s_inc = 1'b1; // PC = PC+1 (0x0007)
-      s_inm = 1'b1; // Escribir constante
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 3: li#2 R1. R1 <- 2.");
-      #20; // Finaliza ciclo 3
+      // Ciclo 4: PC=0x0008 -> li#1 R4 (Opcode: 0001_0000_0001_0100 -> Opcode=0x04, C=0x1, Rd=4)
+      #10;
+      // Instrucción 'li': Igual que ciclo 1, pero carga C=0x1 en Rd=4.
+      s_inm = 1'b1; we3 = 1'b1; Op = 3'b000; s_inc = 1'b1; wez = 1'b0;
+      #10; // Finaliza ciclo 4
 
-      // Ciclo 4: Instrucción en PC=0x0007: li#4 R3 (Opcode 000100)
-      s_inc = 1'b1; // PC = PC+1 (0x0008)
-      s_inm = 1'b1; // Escribir constante
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 4: li#4 R3. R3 <- 4.");
-      #20; // Finaliza ciclo 4
+      // Ciclo 5: PC=0x0009 -> add R2 R3 R2 (Opcode: 1010_0010_0011_0010 -> Opcode=0x28, R1=2, R2=3, Rd=2, Op=000)
+      #10;
+      // Instrucción 'add': Operación ALU. Selecciona salida de ALU para escribir, habilita escritura en banco, actualiza z, PC avanza.
+      // s_inm=0: Elige la salida de la ALU (alu_out) para wd3.
+      // we3=1: Habilita la escritura en el banco de registros.
+      // Op=000: Indica a la ALU que realice una suma (A + B). Segun PDF, bits 14-12 de la instruccion 'add' son 000.
+      // s_inc=1: Elige PC+1 para el próximo valor del PC.
+      // wez=1: Actualiza el flag z con el valor calculado por la ALU (zero).
+      s_inm = 1'b0; we3 = 1'b1; Op = 3'b010; s_inc = 1'b1; wez = 1'b1; // Op=000 para add segun PDF
+      #10; // Finaliza ciclo 5
 
-      // Ciclo 5: Instrucción en PC=0x0008: li#1 R4 (Opcode 000100)
-      s_inc = 1'b1; // PC = PC+1 (0x0009)
-      s_inm = 1'b1; // Escribir constante
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 5: li#1 R4. R4 <- 1.");
-      #20; // Finaliza ciclo 5
+      // Ciclo 6: PC=0x000A -> sub R1 R4 R1 (Opcode: 1011_0001_0100_0001 -> Opcode=0x2C, R1=1, R2=4, Rd=1, Op=011)
+      #10;
+      // Instrucción 'sub': Operación ALU. Selecciona salida de ALU para escribir, habilita escritura en banco, actualiza z, PC avanza.
+      // s_inm=0: Elige la salida de la ALU (alu_out) para wd3.
+      // we3=1: Habilita la escritura en el banco de registros.
+      // Op=011: Indica a la ALU que realice una resta (A - B). Segun PDF, bits 14-12 de la instruccion 'sub' son 011.
+      // s_inc=1: Elige PC+1 para el próximo valor del PC.
+      // wez=1: Actualiza el flag z con el valor calculado por la ALU (zero).
+      s_inm = 1'b0; we3 = 1'b1; Op = 3'b011; s_inc = 1'b1; wez = 1'b1; // Op=011 para sub segun PDF
+      #10; // Finaliza ciclo 6
 
-      // Ciclo 6: Instrucción en PC=0x0009: add R2 R3 R2 (Opcode 101000)
-      s_inc = 1'b1; // PC = PC+1 (0x000A)
-      s_inm = 1'b0; // Escribir resultado de ALU
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b000;  // Op=000 -> ADD
-      wez = 1'b1;   // Actualizar flag z
-      $display("Ciclo 6: add R2 R3 R2. R2 <- R2(0) + R3(4) = 4. z <- (4==0?1:0)=0.");
-      #20; // Finaliza ciclo 6
+      // Ciclo 7: PC=0x000B -> jnz Iter (Opcode: 0100_1000_0000_1001 -> Opcode=0x12, D=0x0009)
+      // La UC ve Opcode=0x12. Comprueba z (z=0, asumiendo R1 != 0 tras sub).
+      // Como z=0 (R1 != 0), debe saltar: s_inc=0, PC=D (0x0009).
+      #10;
+      // Instrucción 'jnz': Salto condicional. No escribe en banco, no usa ALU, actualiza PC condicionalmente.
+      // s_inm=0: No relevante si no escribe.
+      // we3=0: No escribe en el banco de registros.
+      // Op=000: No relevante si no usa ALU.
+      // s_inc=0: Elige la dirección de salto (instruccion[9:0]=0x009) para el próximo valor del PC.
+      // wez=0: No actualiza el flag z.
+      s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; // Salta a Iter (0x0009)
+      #10; // Finaliza ciclo 7
 
-      // Ciclo 7: Instrucción en PC=0x000A: sub R1 R4 R1 (Opcode 101100)
-      s_inc = 1'b1; // PC = PC+1 (0x000B)
-      s_inm = 1'b0; // Escribir resultado de ALU
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b011;  // Op=011 -> SUB
-      wez = 1'b1;   // Actualizar flag z
-      $display("Ciclo 7: sub R1 R4 R1. R1 <- R1(2) - R4(1) = 1. z <- (1==0?1:0)=0.");
-      #20; // Finaliza ciclo 7
+      // Ciclo 8: PC=0x0009 -> add R2 R3 R2 (Opcode: 1010_0010_0011_0010)
+      #10;
+      // Instrucción 'add': Igual que ciclo 5.
+      s_inm = 1'b0; we3 = 1'b1; Op = 3'b010; s_inc = 1'b1; wez = 1'b1; // Op=000 para add
+      #10; // Finaliza ciclo 8
 
-      // Ciclo 8: Instrucción en PC=0x000B: jnz Iter (Opcode 010010)
-      // En este ciclo, la UC simulada *debe* saber el estado actual de 'z'.
-      // Suponemos que 'z' es 0 (resultado de la ALU del ciclo 7).
-      // Si z=0, salta a Iter (0x0009), por lo tanto s_inc=0.
-      s_inc = 1'b0; // s_inc=0 -> salta a Iter (0x0009)
-      s_inm = 1'b0; // Irrelevante
-      we3 = 1'b0;   // No escribe
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 8: jnz Iter. z=0, salta a 0x0009. PC <- 0x0009.");
-      #20; // Finaliza ciclo 8, PC apunta a 0x0009
+      // Ciclo 9: PC=0x000A -> sub R1 R4 R1 (Opcode: 1011_0001_0100_0001)
+      #10;
+      // Instrucción 'sub': Igual que ciclo 6.
+      s_inm = 1'b0; we3 = 1'b1; Op = 3'b011; s_inc = 1'b1; wez = 1'b1; // Op=011 para sub
+      // En este ciclo, R1 se decrementa a 0, por lo que z debería cambiar a 1 tras la ALU.
+      #10; // Finaliza ciclo 9
 
-      // Ciclo 9: Instrucción en PC=0x0009: add R2 R3 R2 (Opcode 101000) - Segunda iteración
-      s_inc = 1'b1; // PC = PC+1 (0x000A)
-      s_inm = 1'b0; // Escribir resultado de ALU
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b000;  // Op=000 -> ADD
-      wez = 1'b1;   // Actualizar flag z
-      $display("Ciclo 9: add R2 R3 R2. R2 <- R2(4) + R3(4) = 8. z <- (8==0?1:0)=0.");
-      #20; // Finaliza ciclo 9
+      // Ciclo 10: PC=0x000B -> jnz Iter (Opcode: 0100_1000_0000_1001)
+      // La UC ve Opcode=0x12. Comprueba z (z=1, asumiendo R1 == 0 tras sub del ciclo 9).
+      // Como z=1 (R1 == 0), NO salta: s_inc=1, PC=PC+1 (0x000C).
+      #10;
+      // Instrucción 'jnz': Salto condicional. No escribe en banco, no usa ALU, actualiza PC condicionalmente.
+      // s_inm=0: No relevante si no escribe.
+      // we3=0: No escribe en el banco de registros.
+      // Op=000: No relevante si no usa ALU.
+      // s_inc=1: Elige PC+1 para el próximo valor del PC.
+      // wez=0: No actualiza el flag z.
+      s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b1; wez = 1'b0; // No salta, PC=0x000C
+      #10; // Finaliza ciclo 10
 
-      // Ciclo 10: Instrucción en PC=0x000A: sub R1 R4 R1 (Opcode 101100) - Segunda iteración
-      s_inc = 1'b1; // PC = PC+1 (0x000B)
-      s_inm = 1'b0; // Escribir resultado de ALU
-      we3 = 1'b1;   // Escribir en banco
-      Op = 3'b011;  // Op=011 -> SUB
-      wez = 1'b1;   // Actualizar flag z
-      $display("Ciclo 10: sub R1 R4 R1. R1 <- R1(1) - R4(1) = 0. z <- (0==0?1:0)=1.");
-      #20; // Finaliza ciclo 10
+      // Ciclo 11: PC=0x000C -> j Fin (Opcode: 0100_0000_0000_1100 -> Opcode=0x10, D=0x000C)
+      // La UC ve Opcode=0x10. Debe saltar incondicionalmente a D (0x000C).
+      #10;
+      // Instrucción 'j': Salto incondicional. No escribe en banco, no usa ALU, actualiza PC.
+      // s_inm=0: No relevante si no escribe.
+      // we3=0: No escribe en el banco de registros.
+      // Op=000: No relevante si no usa ALU.
+      // s_inc=0: Elige la dirección de salto (instruccion[9:0]=0x00C) para el próximo valor del PC.
+      // wez=0: No actualiza el flag z.
+      s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; // Salta a Fin (0x000C) - Bucle infinito
+      #10; // Finaliza ciclo 11
 
-      // Ciclo 11: Instrucción en PC=0x000B: jnz Iter (Opcode 010010)
-      // En este ciclo, la UC simulada *debe* saber el estado actual de 'z'.
-      // Suponemos que 'z' es 1 (resultado de la ALU del ciclo 10).
-      // Si z=1, NO salta, PC = PC+1.
-      s_inc = 1'b1; // s_inc=1 -> PC = PC+1 (0x000C)
-      s_inm = 1'b0; // Irrelevante
-      we3 = 1'b0;   // No escribe
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 11: jnz Iter. z=1, no salta. PC <- PC+1 = 0x000C.");
-      #20; // Finaliza ciclo 11, PC apunta a 0x000C
+      // Ciclo 12: PC=0x000C -> j Fin (Opcode: 0100_0000_0000_1100)
+      // La UC ve Opcode=0x10. Debe saltar incondicionalmente a D (0x000C).
+      #10;
+      // Instrucción 'j': Salto incondicional. No escribe en banco, no usa ALU, actualiza PC.
+      // s_inm=0: No relevante si no escribe.
+      // we3=0: No escribe en el banco de registros.
+      // Op=000: No relevante si no usa ALU.
+      // s_inc=0: Elige la dirección de salto (instruccion[9:0]=0x00C) para el próximo valor del PC.
+      // wez=0: No actualiza el flag z.
+      s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; // Salta a Fin (0x000C) - Bucle infinito
+      #10; // Finaliza ciclo 12
 
-      // Ciclo 12: Instrucción en PC=0x000C: j Fin (Opcode 010000) - Bucle infinito
-      s_inc = 1'b0; // s_inc=0 -> salta a Fin (0x000C)
-      s_inm = 1'b0; // Irrelevante
-      we3 = 1'b0;   // No escribe
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 12: j Fin. Bucle infinito. PC <- 0x000C.");
-      #20; // Finaliza ciclo 12, PC sigue en 0x000C
+      // Opcional: Simular un par de ciclos más del bucle (como pide el PDF)
+      // Ciclo 13
+      #10;
+      s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; // Salta a Fin (0x000C) - Bucle infinito
+      #10; // Finaliza ciclo 13
 
-      // Ciclo 13: Instrucción en PC=0x000C: j Fin (Opcode 010000) - Bucle infinito continúa
-      s_inc = 1'b0; // s_inc=0 -> salta a Fin (0x000C)
-      s_inm = 1'b0; // Irrelevante
-      we3 = 1'b0;   // No escribe
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 13: j Fin. Bucle infinito. PC <- 0x000C.");
-      #20; // Finaliza ciclo 13, PC sigue en 0x000C
-
-      // Ciclo 14: Instrucción en PC=0x000C: j Fin (Opcode 010000) - Bucle infinito continúa
-      s_inc = 1'b0; // s_inc=0 -> salta a Fin (0x000C)
-      s_inm = 1'b0; // Irrelevante
-      we3 = 1'b0;   // No escribe
-      Op = 3'b000;  // Irrelevante
-      wez = 1'b0;   // Irrelevante
-      $display("Ciclo 14: j Fin. Bucle infinito. PC <- 0x000C.");
-      #20; // Finaliza ciclo 14, PC sigue en 0x000C
+      // Ciclo 14
+      #10;
+      s_inm = 1'b0; we3 = 1'b0; Op = 3'b000; s_inc = 1'b0; wez = 1'b0; // Salta a Fin (0x000C) - Bucle infinito
+      #10; // Finaliza ciclo 14
 
       $finish; // Termina la simulación
     end

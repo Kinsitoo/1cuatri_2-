@@ -14,7 +14,7 @@ regfile Banco_reg(rd1, rd2, clk, we3, instruccion[3:0], instruccion[11:8], instr
 
 alu ALU(alu_out, z, rd1, rd2, Op);
 
-sum sumador(sum_out, pc_out, 10'b0000000001);
+sum sumador(sum_out, pc_out, 10'd1);
 
 // Mux de la izq 
 mux2 #(10) mux1(pc_in, sum_out, instruccion[9:0], s_inc);
@@ -22,6 +22,6 @@ mux2 #(10) mux1(pc_in, sum_out, instruccion[9:0], s_inc);
 // Mux de la derecha
 mux2 #(8) mux3(wd3, alu_out, instruccion[11:4], s_inm);
 
-assign OPCODE = instruccion[15:10];
+assign Opcode = instruccion[15:10];
 
 endmodule
