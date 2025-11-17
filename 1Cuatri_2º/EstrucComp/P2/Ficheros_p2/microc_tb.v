@@ -34,7 +34,7 @@ end
     begin
       $dumpfile("microc_tb.vcd");
       $dumpvars(0, microc_tb); // Volcado de todas las variables del testbench
-
+      
       // Inicializar señales de control
       s_inc = 1'b0; // Inicialmente, PC incrementa (aunque reset lo pondrá a 0)
       s_inm = 1'b0;
@@ -43,9 +43,9 @@ end
       Op = 3'b000;
 
      // --- Reset inicial ---
-      reset = 1'b1;
+      reset = 1;
       #5; // Espera un poco antes de desactivar reset
-      reset = 1'b0;
+      reset = 0;
 
        // --- Simulación del programa de ejemplo ---
     // *** CICLO 1: PC=0x000 (j Start) -> Salto a 0x005 ***

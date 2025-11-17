@@ -1,5 +1,5 @@
 $date
-	Mon Nov 17 10:40:07 2025
+	Mon Nov 17 12:59:56 2025
 $end
 $version
 	Icarus Verilog
@@ -94,6 +94,13 @@ $var wire 10 Q Y [9:0] $end
 $upscope $end
 $upscope $end
 $upscope $end
+$scope module microc_tb $end
+$scope module micro $end
+$scope module Banco_reg $end
+$var reg 8 R \R[1] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
@@ -103,6 +110,7 @@ b1010 C
 $end
 #0
 $dumpvars
+b0 R
 b1 Q
 b1 P
 b0 O
