@@ -1,8 +1,8 @@
 module microc(output wire [5:0] Opcode, output wire z, input wire clk, reset, s_inc, s_inm, we3, wez, input wire [2:0] Op);
 //Microcontrolador sin memoria de datos de un solo ciclo
-wire [7:0] rd1, rd2, wd3, alu_out, inm;    
+wire [7:0] rd1, rd2, wd3, alu_out;    
 wire [15:0] instruccion;
-wire [9:0] pc_out, pc_in, dir_salto, mux_out, sum_out;
+wire [9:0] pc_out, pc_in, dir_salto, sum_out;
 wire zero_flag_alu;
 
 assign dir_salto = instruccion[9:0];

@@ -49,75 +49,84 @@ end
 
        // --- Simulación del programa de ejemplo ---
     // *** CICLO 1: PC=0x000 (j Start) -> Salto a 0x005 ***
-    #10; 
+    #5; 
     // Opcode 000100 (j). Control: s_inc=0 (Salto). No escribe nada.
     s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000; 
+    #5;
 
     // *** CICLO 2: PC=0x005 (li #0, R2) -> R2 = 0 ***
-    #20; 
+    #5; 
     // Opcode 0001 (li). Control: s_inc=1 (PC+1), s_inm=1 (Inm), we3=1 (Escribe R2).
     s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000; 
+    #5;
 
     // *** CICLO 3: PC=0x006 (li #2, R1) -> R1 = 2 ***
-    #20;
     // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R1).
+    #5;
     s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000; 
-    
-    // *** CICLO 4: PC=0x007 (li #4, R3) -> R3 = 4 ***
-    #20;
-    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R3).
-    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000;
-    
-    // *** CICLO 5: PC=0x008 (li #1, R4) -> R4 = 1 ***
-    #20;
-    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R4).
-    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000;
+    #5;
 
+    // *** CICLO 4: PC=0x007 (li #4, R3) -> R3 = 4 ***
+    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R3).
+    #5;
+    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000;
+    #5;
+
+    // *** CICLO 5: PC=0x008 (li #1, R4) -> R4 = 1 ***
+    // Opcode 0001 (li). Control: s_inc=1, s_inm=1, we3=1 (Escribe R4).
+    #5;
+    s_inc = 1; s_inm = 1; we3 = 1; wez = 0; Op = 3'b000;
+    #5;
     // --- INICIO BUCHE (Iteración 1) ---
 
     // *** CICLO 6: PC=0x009 (add R2, R3, R2) -> R2 = 0 + 4 = 4. Z=0. ***
-    #20;
     // Opcode 1010 (add). Control: s_inm=0 (ALU), we3=1, wez=1 (Actualiza Z). Op=3'b010 (ADD).
+    #5;
     s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b010; 
-
+    #5;
+    
     // *** CICLO 7: PC=0x00A (sub R1, R4, R1) -> R1 = 2 - 1 = 1. Z=0. ***
-    #20;
-    // Opcode 1011 (sub). Control: s_inm=0, we3=1, wez=1. Op=3'b011 (SUB).
+    // Opcode 1011 (sub). Control: s_inm=0, we3=1, wez=1. Op=3'b011 (SUB)
+    #5;
     s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b011; 
+    #5;
 
     // *** CICLO 8: PC=0x00B (jnz Iter) -> Z=0. Salta a 0x009. ***
-    #20;
     // Opcode 001010 (jnz). Comprueba Z. Z=0 -> s_inc=0 (Salto). No escribe nada.
+    #5;
     s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000; 
-    
+    #5;
     // --- BUCHE (Iteración 2) ---
 
     // *** CICLO 9: PC=0x009 (add R2, R3, R2) -> R2 = 4 + 4 = 8. Z=0. ***
-    #20;
+    #5;
     s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b010; 
-    
+    #5;
+
     // *** CICLO 10: PC=0x00A (sub R1, R4, R1) -> R1 = 1 - 1 = 0. Z=1. ***
-    #20;
+    #5;
     s_inc = 1; s_inm = 0; we3 = 1; wez = 1; Op = 3'b011;
+    #5;
 
     // *** CICLO 11: PC=0x00B (jnz Iter) -> Z=1. NO salta, PC+1 (0x00C). ***
-    #20;
     // Z=1 -> s_inc=1 (PC+1).
+    #5;
     s_inc = 1; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000;
+    #5;
 
     // --- FIN BUCHE (Bucle Infinito) ---
 
     // *** CICLO 12: PC=0x00C (j Fin) -> Salta a 0x00C (bucle infinito). ***
-    #20;
     // Opcode 000100 (j) -> s_inc=0.
+    #5;
     s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000;
+    #5;
 
     // *** CICLO 13: PC=0x00C (j Fin) -> Se mantiene el bucle. ***
-    #20;
+    #5;
     s_inc = 0; s_inm = 0; we3 = 0; wez = 0; Op = 3'b000;
-    
+    #5;
     // Terminamos la simulación
-    #20;
   $finish;
 end
 
