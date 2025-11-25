@@ -112,14 +112,45 @@ std::expected <void, std::system_error> copy_file(
     return {};
 }
 
+//MODI: Antes de copiar, Informacion en pantalla del fichero a origen a copiar, Tamaño, tipo de archivo, y el nombre de archivo
+
+void print_file_info(const std::string& path) {
+    struct stat st;
+    if (stat(path.c_str(), &st) == -1) {
+        std::cerr << "copy: error al obtener información del archivo: "
+                  << std::strerror(errno) << "\n";
+        return;
+    }
+
+    std::cout << "=== Información del archivo ===\n";
+    std::cout << "Nombre: " << get_filename(path) << "\n";
+    std::cout << "Ruta completa: " << path << "\n";
+    std::cout << "Tamaño: " << st.st_size << " bytes\n";
+
+    std::cout << "Tipo: ";
+    if (S_ISREG(st.st_mode)) std::cout << "Archivo regular\n";
+    else if (S_ISDIR(st.st_mode)) std::cout << "Directorio\n";
+    else if (S_ISLNK(st.st_mode)) std::cout << "Enlace simbólico\n";
+    else if (S_ISCHR(st.st_mode)) std::cout << "Dispositivo de caracteres\n";
+    else if (S_ISBLK(st.st_mode)) std::cout << "Dispositivo de bloques\n";
+    else if (S_ISFIFO(st.st_mode)) std::cout << "FIFO/PIPE\n";
+    else if (S_ISSOCK(st.st_mode)) std::cout << "Socket\n";
+    else std::cout << "Tipo desconocido\n";
+
+}
+
+
 
 int main(int argc, char* argv[]) {
     if (!check_args(argc, argv)) {
         return 1;
     }
+    
 
     std::string origen = argv[1];
     std::string destino = argv[2];
+
+    print_file_info(origen);
 
     // Si destino es un directorio, ajustar ruta
     if (is_directory(destino)) {
@@ -134,3 +165,5 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+//g++ -std=c++23 copy.cc -o copy
