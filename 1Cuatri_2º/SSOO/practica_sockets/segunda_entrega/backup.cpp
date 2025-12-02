@@ -1,11 +1,4 @@
 // backup.cpp
-// Este archivo implementa el cliente. El cliente:
-// - comprueba que el archivo existe
-// - consulta el PID del servidor
-// - abre la FIFO en modo escritura
-// - envía la ruta absoluta del archivo seguida por '\n'
-// - le manda al servidor la señal SIGUSR1 para activar el backup
-
 #include "common.hpp"
 
 #include <iostream>
@@ -15,6 +8,16 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <cstring>
+
+// =============================
+// MODI: variable global para recibir señal
+// =============================
+volatile sig_atomic_t backup_result = 0; // 1 = éxito (SIGUSR1), 2 = error (SIGUSR2)
+
+void handler_backup_result(int signum) {
+    if (signum == SIGUSR1) backup_result = 1;
+    else if (signum == SIGUSR2) backup_result = 2;
+}
 
 int main(int argc, char* argv[]) {
 
@@ -68,21 +71,27 @@ int main(int argc, char* argv[]) {
 
     pid_t server_pid = maybe_pid.value();
 
-    // Comprobamos si el servidor sigue vivo
     if (!is_server_running(server_pid)) {
         std::cerr << "backup: error: el servidor no está ejecutándose\n";
         return 1;
     }
 
     // =============================
-    // 5. Bloquear SIGPIPE para que no nos mate el proceso
-    //    si la FIFO tiene un extremo roto
+    // MODI: instalar manejadores para recibir resultado
     // =============================
+    struct sigaction sa{};
+    sa.sa_handler = handler_backup_result;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGUSR1, &sa, nullptr);
+    sigaction(SIGUSR2, &sa, nullptr);
 
+    // =============================
+    // 5. Bloquear SIGPIPE para FIFO rota
+    // =============================
     sigset_t s;
     sigemptyset(&s);
     sigaddset(&s, SIGPIPE);
-
     if (sigprocmask(SIG_BLOCK, &s, nullptr) == -1) {
         std::cerr << "backup: error bloqueando SIGPIPE: " << strerror(errno) << "\n";
         return 1;
@@ -102,7 +111,7 @@ int main(int argc, char* argv[]) {
     }
 
     // =============================
-    // 7. Convertir la ruta a absoluta
+    // 7. Convertir ruta a absoluta
     // =============================
 
     auto abs_res = get_absolute_path(archivo);
@@ -114,22 +123,19 @@ int main(int argc, char* argv[]) {
     }
 
     std::string path_abs = abs_res.value();
-
-    // Añadimos '\n' al final porque el servidor lee líneas completas
     std::string to_write = path_abs + "\n";
 
     // =============================
-    // 8. Escribir ruta en FIFO con write()
+    // 8. Escribir ruta en FIFO
     // =============================
 
     const char* buf = to_write.c_str();
     size_t total = to_write.size();
     size_t written = 0;
-
     while (written < total) {
         ssize_t w = write(fifo_fd, buf + written, total - written);
         if (w == -1) {
-            if (errno == EINTR) continue; // si señal interrumpe, repetimos
+            if (errno == EINTR) continue;
             std::cerr << "backup: error escribiendo en FIFO: " << strerror(errno) << "\n";
             close(fifo_fd);
             return 1;
@@ -140,7 +146,6 @@ int main(int argc, char* argv[]) {
     // =============================
     // 9. Enviar señal SIGUSR1 al servidor
     // =============================
-
     if (kill(server_pid, SIGUSR1) == -1) {
         std::cerr << "backup: error enviando señal al servidor: "
                   << strerror(errno) << "\n";
@@ -149,16 +154,31 @@ int main(int argc, char* argv[]) {
     }
 
     // =============================
-    // 10. Cerrar FIFO y terminar
+    // MODI: esperar resultado del servidor
     // =============================
+    off_t file_size = lseek(open(archivo.c_str(), O_RDONLY), 0, SEEK_END);
+    close(open(archivo.c_str(), O_RDONLY));
+    if (file_size < 0) file_size = 1; // evitar 0
+    unsigned int wait_time = static_cast<unsigned int>(file_size / 1024 + 1); // segundos aproximados
+    unsigned int slept = 0;
+    while (slept < wait_time && backup_result == 0) {
+        sleep(1);
+        slept++;
+    }
 
     close(fifo_fd);
-    std::cout << "backup: solicitud enviada para " << path_abs << "\n";
+
+    if (backup_result == 1) {
+        std::cout << "backup: archivo " << path_abs << " respaldado correctamente\n";
+    } else if (backup_result == 2) {
+        std::cout << "backup: error al respaldar " << path_abs << "\n";
+    } else {
+        std::cout << "backup: tiempo de espera excedido sin respuesta del servidor\n";
+    }
 
     return 0;
 }
 
-
-////g++ -std=c++23 -O2 backup.cpp -o backup
+//g++ -std=c++23 -O2 backup.cpp -o backup
 //export BACKUP_WORK_DIR=~/UNI/1Cuatri_2º/SSOO/practica_sockets/segunda_entrega/work-backup/
-//./backup prueba.txt 
+//./backup prueba.txt
