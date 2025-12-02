@@ -233,3 +233,8 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+
+//g++ -std=c++23 -O2 backup-server.cpp -o backup-server
+//export BACKUP_WORK_DIR=~/UNI/1Cuatri_2º/SSOO/practica_sockets/segunda_entrega/work-backup/
+//./backup-server ~/UNI/1Cuatri_2º/SSOO/practica_sockets/segunda_entrega/backups/

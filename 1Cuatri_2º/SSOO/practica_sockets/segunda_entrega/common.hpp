@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <cstdio>
 #include <atomic>
+#include <signal.h>
 
 // Tamaño del buffer usado para copiar archivos (64KiB).
 constexpr size_t COPY_BUFFER_SIZE = 64 * 1024;
