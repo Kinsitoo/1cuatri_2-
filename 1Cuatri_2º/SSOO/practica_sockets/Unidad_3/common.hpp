@@ -406,6 +406,10 @@ bool is_command_available(const std::string& command) {
     if (!path_env) return false;
 
     std::string paths(path_env);
+#include <system_error>
+#include <sys/stat.h>
+#include <unistd.h>
+#inclu
     std::istringstream ss(paths);
     std::string dir;
 
@@ -463,6 +467,10 @@ copy_file_compressed(const std::string& src_path,
         // PADRE
         close(pipefd[0]);
 
+#include <system_error>
+#include <sys/stat.h>
+#include <unistd.h>
+#inclu
         sigset_t oldset, newset;
         sigemptyset(&newset);
         sigaddset(&newset, SIGPIPE);
@@ -479,6 +487,10 @@ copy_file_compressed(const std::string& src_path,
 
         std::vector<char> buffer(COPY_BUFFER_SIZE);
         bool write_error = false;
+#include <system_error>
+#include <sys/stat.h>
+#include <unistd.h>
+#inclu
 
         while (true) {
             ssize_t br = read(src_fd, buffer.data(), buffer.size());
@@ -505,6 +517,10 @@ copy_file_compressed(const std::string& src_path,
         close(pipefd[1]);
         pthread_sigmask(SIG_SETMASK, &oldset, nullptr);
 
+#include <system_error>
+#include <sys/stat.h>
+#include <unistd.h>
+#inclu
         int status;
         if (waitpid(pid, &status, 0) == -1) {
             return std::unexpected(CopyFileCompressedError::unknown_error);
