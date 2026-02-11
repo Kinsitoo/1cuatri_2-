@@ -1,6 +1,6 @@
-// AUTOR: 
-// FECHA: 
-// EMAIL: 
+// AUTOR: Kin Daniel Fortuno Pontillas
+// FECHA: 3 de febrero de 2025
+// EMAIL: alu0101679112@ull.edu.es
 // VERSION: 1.0
 // ASIGNATURA: Algoritmos y Estructuras de Datos
 // PRÁCTICA Nº: 1
@@ -65,7 +65,7 @@ rational_t::value() const
 bool
 rational_t::is_equal(const rational_t& r, const double precision) const
 {
-  if(fabs(num_ - den_) < precision) {
+  if(fabs(value() - r.value()) < precision) {
     return true;
   } else {
     return false;
@@ -77,7 +77,7 @@ rational_t::is_equal(const rational_t& r, const double precision) const
 bool
 rational_t::is_greater(const rational_t& r, const double precision) const
 {
-  if((num_ - den_) > precision) {
+  if((value() - r.value()) > precision) {
     return true;
   } else {
     return false;
@@ -89,7 +89,7 @@ rational_t::is_greater(const rational_t& r, const double precision) const
 bool
 rational_t::is_less(const rational_t& r, const double precision) const
 {
-  if((den_ - num_) > precision) {
+  if((r.value() - value()) > precision) {
     return true;
   } else {
     return false;
@@ -101,7 +101,8 @@ rational_t::is_less(const rational_t& r, const double precision) const
 rational_t
 rational_t::add(const rational_t& r)
 {
-  return (num_ * r.den_) + (den_ * r.num_) / (den_ * r.den_);
+  return num_ * r.get_den() + den_ * r.get_num(),
+  den_ * r.get_den();
 }
 
 
@@ -109,7 +110,8 @@ rational_t::add(const rational_t& r)
 rational_t
 rational_t::substract(const rational_t& r)
 {
-  return (num_ * r.den_) + (den_* (-r.num_)) / (den_ * r.den_);
+  return num_ * r.get_den() - den_ * r.get_num(),
+  den_ * r.get_den();
 }
 
 
@@ -117,7 +119,8 @@ rational_t::substract(const rational_t& r)
 rational_t
 rational_t::multiply(const rational_t& r)
 {
-  return (num_ * r.num_) / (den_ * r.den_);
+  return num_ * r.get_num(),
+  den_ * r.get_den();
 }
 
 
@@ -125,7 +128,11 @@ rational_t::multiply(const rational_t& r)
 rational_t
 rational_t::divide(const rational_t& r)
 {
-  return num_ * r.den_ + den_ * r.num_;
+  assert(r.get_num() != 0);  // ¡Dividir por 0/5 es válido, pero por 0/1 NO!
+  return rational_t(
+    num_ * r.get_den(),
+    den_ * r.get_num()   // (a/b) / (c/d) = (a*d)/(b*c)
+  );
 }
 
 

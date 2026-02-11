@@ -41,8 +41,8 @@ int main()
   x.write();
   y.write();
   cout << "x == y? " << (x.is_equal(y) ? "true" : "false") << endl;
-  cout << "x < y? " << (x.is_greater(y) ? "true" : "false") << endl;
-  cout << "x > y? " << (x.is_less(y) ? "true" : "false") << endl;
+  cout << "x > y? " << (x.is_greater(y) ? "true" : "false") << endl;
+  cout << "x < y? " << (x.is_less(y) ? "true" : "false") << endl;
 
   // FASE III
   cout << "a + b: ";
