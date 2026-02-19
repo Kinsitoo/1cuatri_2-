@@ -21,7 +21,7 @@ using namespace std;
 
 int main()
 {
-  rational_t a(1, 2), b(3), c;
+  rational_t a(1,2), b(3), c;
 
   cout << "a.value()= " << a.value() << endl;
   cout << "b.value()= " << b.value() << endl;
@@ -37,12 +37,13 @@ int main()
   c.write();
 
   // FASE II
-  rational_t x(1, 3), y(2, 3);
+  rational_t x(1, 2), y(2, 3);
   x.write();
   y.write();
   cout << "x == y? " << (x.is_equal(y) ? "true" : "false") << endl;
   cout << "x > y? " << (x.is_greater(y) ? "true" : "false") << endl;
   cout << "x < y? " << (x.is_less(y) ? "true" : "false") << endl;
+  cout << "x == 0? " << (x.is_equal_zero() ? "true" : "false") << endl;
 
   // FASE III
   cout << "a + b: ";
@@ -56,6 +57,13 @@ int main()
   
   cout << "a / b: ";
   a.divide(b).write();
+
+  
+
+  //MODIS
+
+  cout << "Inverso de a: ";
+  a.inverso().write();
   
   return 0;
 }

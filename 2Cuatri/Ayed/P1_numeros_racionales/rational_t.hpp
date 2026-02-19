@@ -43,6 +43,7 @@ public:
   bool is_equal(const rational_t&, const double precision = EPSILON) const;
   bool is_greater(const rational_t&, const double precision = EPSILON) const;
   bool is_less(const rational_t&, const double precision = EPSILON) const;
+  bool is_equal_zero(const double precision = EPSILON) const;
   
   // FASE III
   rational_t add(const rational_t&);
@@ -52,6 +53,10 @@ public:
   
   void write(ostream& = cout) const;
   void read(istream& = cin);
+
+  //Posibles MODIS
+
+  rational_t inverso();
   
 private:
   // pauta de estilo [11]: nombre de los atributos seguido de "_"

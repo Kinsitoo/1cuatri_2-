@@ -97,12 +97,27 @@ rational_t::is_less(const rational_t& r, const double precision) const
 }
 
 
+
+bool
+rational_t::is_equal_zero(const double precision) const
+{
+  if(fabs(value()) < EPSILON) {
+    return true;
+  } else {
+    return false;
+  }
+  
+}
+
+
+
 // operaciones
 rational_t
 rational_t::add(const rational_t& r)
 {
-  return num_ * r.get_den() + den_ * r.get_num(),
-  den_ * r.get_den();
+  int n = num_ * r.get_den() + den_ * r.get_num();
+  int d = den_ * r.get_den();
+  return rational_t(n, d);
 }
 
 
@@ -110,8 +125,9 @@ rational_t::add(const rational_t& r)
 rational_t
 rational_t::substract(const rational_t& r)
 {
-  return num_ * r.get_den() - den_ * r.get_num(),
-  den_ * r.get_den();
+  int n = num_ * r.get_den() - den_ * r.get_num();
+  int d = den_ * r.get_den();
+  return rational_t(n, d);
 }
 
 
@@ -119,8 +135,9 @@ rational_t::substract(const rational_t& r)
 rational_t
 rational_t::multiply(const rational_t& r)
 {
-  return num_ * r.get_num(),
-  den_ * r.get_den();
+  int n = num_ * r.get_num(); // Numerador = a*c
+  int d = den_ * r.get_den(); // Denominador = b*d
+  return rational_t(n, d);  // (a*c) / (b*d)
 }
 
 
@@ -128,13 +145,11 @@ rational_t::multiply(const rational_t& r)
 rational_t
 rational_t::divide(const rational_t& r)
 {
-  assert(r.get_num() != 0);  // ¡Dividir por 0/5 es válido, pero por 0/1 NO!
   return rational_t(
     num_ * r.get_den(),
     den_ * r.get_num()   // (a/b) / (c/d) = (a*d)/(b*c)
   );
 }
-
 
 
 // E/S
@@ -145,6 +160,15 @@ rational_t::write(ostream& os) const
 }
 
 
+//Posibles MODIS
+
+rational_t
+rational_t::inverso()
+{
+  int n = den_;
+  int d = num_;
+  return rational_t(n,d);
+}
 
 void 
 rational_t::read(istream& is)
