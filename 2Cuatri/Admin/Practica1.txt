@@ -1,0 +1,75 @@
+Primeramente creamos tanto los usuarios como los grupos
+respectivos de cada uno usando los siguientes comandos:
+
+useradd "Nombre del usuario"
+groupadd "Nombre del grupo"
+
+Luego para añadir cada usuario a su grupo usamos:
+
+usermod -aG "Nombre del grupo" "Nombre del usuario"
+
+Ahora para configurar la seguridad de cada usuario: 
+
+Primero añadimos a cada uno su respectiva contraseña que seria su
+mismo nombre con: 
+
+passwd  "Nombre del usuario"
+
+Luego debemos modificar la "edad" de la contraseña: 
+
+chage "Nombre de usuario"
+
+Ahora creamos sus respectivos directivos con sus mismos nombres de
+usuario: 
+
+mkdir "Nombre del directorio"
+
+Para que no pueda modificar los permisos de su directorio hacemos
+que el propietario de cada directorio sea root y el grupo sea el 
+grupo del principal del usuario: 
+
+chown -R "Nombre del usuario" "directorio"
+chgrp -R "Nombre del grupo" "directorio"
+chmod u+rwx "Nombre del directorio"
+chmod g+rwx "Nombre del directorio"
+chmod o+--- "Nombre del directorio"
+
+-----------------------------------------------------------------
+
+Para Gala Carnaval creamos dos directorios para los dos puntos de
+la practica. En el primer directorio cambiamos permisos para que 
+Lorenzo no pueda modificar los archivos.
+Cabe aclarar que el owner es root y el grupo sería Organizadores, 
+para realizarlo hariamos una acl donde Lorenzo no tenga el permiso
+de modificar: 
+
+setfacl -m u:"Lorenzo":rx "Nombre del directorio"
+
+Tambien cambiamos los permisos a los otros para que puedan leer lo
+que hay en el interior:
+
+chmod o+rx "Nombre del directorio"
+
+Tambien utilizamos utilizamos el permiso especial SGID para que 
+los nuevos archivos creados dentro hereden el grupo del directorio
+
+chmod g+s "Nombre del directorio"
+
+
+Para la segunda carpeta de nuevo el owner será root y el grupo será 
+Organizadores donde le daremos permisos completos rwx y para que los
+reps de comparsas y murgas puedan modificar le daremos permisos con 
+acls y los rondallas permisos de lectura
+
+--------------------------------------------------------------------
+
+
+En concurso de letras creamos una carpeta donde el owner es root
+y el grupo es rep de murgas donde tienen rwx y para que solo 
+el usuario que crea cada archivo pueda borrarlo usamos el permiso
+especial t:
+
+chmod o+t "Nombre del directorio"
+
+Y para que trapa solo pueda ver el contenido pues usamos una acl
+donde solo tenga rx.
