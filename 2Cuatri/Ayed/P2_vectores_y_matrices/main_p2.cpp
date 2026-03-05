@@ -61,8 +61,9 @@ int main()
   A.read(), A.write();
   B.read(), B.write();
   
-  C.multiply(A, B);
+
   cout << "Multiplicación de matrices A y B: " << endl;
+  C.multiply(A, B);
   C.write();
   
   return 0;
