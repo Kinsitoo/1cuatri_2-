@@ -1,3 +1,6 @@
+#Autor: Kin Daniel Fortuno Pontillas
+#Fecha : 4 de Marzo de 2026
+
 #// Programa para evaluar polinomio tercer grado
 #//Realiza un programa en ensamblador MIPS que evalúe un polinomio de tercer 
 #//grado de la forma 
