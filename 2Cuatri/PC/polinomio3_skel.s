@@ -68,7 +68,7 @@ strIntroS:	.asciiz	"Límite superior s: "
 strF:		.asciiz	"f("
 strIgual:	.asciiz	") = "
 strNoSupera:	.asciiz	" no supera"
-strTermina:	.asciiz	"\nTermina el programa\n"
+strTermina:	.asciiz	"\n\nTermina el programa\n"
 strNewline: .asciiz "\n"
 
 .text
@@ -149,11 +149,6 @@ main:
   
   do_while_fin:
 
-    li $v0, 4
-    la $a0, strNewline
-    syscall
-
-
 #   for (int x = r ; x <= s ; x++) {
     for: 
       bgt $s0, $s1, for_fin
@@ -208,6 +203,17 @@ main:
 #    } else {
     else:
 #      std::cout << x << " no supera";
+      li $v0, 1
+      move $a0, $s0
+      syscall
+
+      li $v0, 4
+      la $a0, strNoSupera
+      syscall
+
+      li $v0, 4
+      la $a0, strNewline 
+      syscall
 
       addi $s0, 1
       b for

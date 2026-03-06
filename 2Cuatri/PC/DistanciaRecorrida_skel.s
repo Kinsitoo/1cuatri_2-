@@ -99,10 +99,10 @@ main:
 #
 #     if ((velocidad == 0) || (segundos == 0)) {
 		if:
-			beqz $s0, then
+			bnez $s0, while
 			b while_fin
-		then:
-			beqz $s1, if
+			bnez $s1, while
+			b while_fin
 #       break;
 #     }
 	while_fin:
