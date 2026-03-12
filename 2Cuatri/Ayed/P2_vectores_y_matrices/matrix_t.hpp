@@ -40,9 +40,14 @@ public:
   
   // operaciones y operadores
   void multiply(const matrix_t<T>&, const matrix_t<T>&);
+  
+  //MODI
+  vector_t<T> main_diagonal(void);
 
   void write(ostream& = cout) const;
   void read(istream& = cin);
+
+  //MODI
 
 private:
   int m_, n_; // m_ filas y n_ columnas
@@ -194,3 +199,20 @@ matrix_t<T>::multiply(const matrix_t<T>& A, const matrix_t<T>& B)
     }
   }
 } 
+
+//MODI: Desarrollar un método de la clase "matrix" que devuelva el vector que contenga su diagonal principal. Su cabecera debe ser:
+//template <classT> vector_t<T> matrix_t<T>::main_diagonal(void)
+
+template<class T>
+vector_t<T>
+matrix_t<T>::main_diagonal(void)
+{
+  int min_dim = (get_m() < get_n()) ? get_m() : get_n();
+  vector_t<T> diag(min_dim);
+
+  for (int i = 1; i <= min_dim; ++i) {
+    diag[i-1] = at(i, i);
+  }
+  return diag;
+} 
+

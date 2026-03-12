@@ -65,6 +65,9 @@ int main()
   cout << "Multiplicación de matrices A y B: " << endl;
   C.multiply(A, B);
   C.write();
-  
+
+//MODI  
+  C.main_diagonal().write();
+
   return 0;
 }
