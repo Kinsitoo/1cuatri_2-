@@ -55,6 +55,7 @@ class SparsePolynomial : public sparse_vector_t {
   double Eval(const double) const;
   bool IsEqual(const SparsePolynomial&, const double = EPS) const;
   bool IsEqual(const Polynomial&, const double = EPS) const;
+  vector_t<double> GetEvenDegreeCoefficients(void) const;
 };
 
 // E/S
@@ -203,6 +204,26 @@ bool SparsePolynomial::IsEqual(const Polynomial& pol, const double eps) const {
   }
 
   return true;
+}
+
+// Obtiene los coeficientes no nulos cuyos monomios tienen grado par.
+vector_t<double> SparsePolynomial::GetEvenDegreeCoefficients(void) const {
+  int count{0};
+  for (int i{0}; i < get_nz(); i++) {
+    if (at(i).get_inx() % 2 == 0)
+      count++;
+  }
+
+  vector_t<double> coeffs(count);
+  int j{0};
+  for (int i{0}; i < get_nz(); i++) {
+    if (at(i).get_inx() % 2 == 0) {
+      coeffs.at(j) = at(i).get_val();
+      j++;
+    }
+  }
+
+  return coeffs;
 }
 
 

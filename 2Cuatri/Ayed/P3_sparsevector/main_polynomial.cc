@@ -91,5 +91,15 @@ int main()
   cout << "sp3 == p2? " << (sp3.IsEqual(p2) ? "true" : "false") << endl;
   cout << endl;
 
+  // Modificación: coeficientes no nulos de monomios de grado par
+  vector_t<double> even_sp1{sp1.GetEvenDegreeCoefficients()};
+  vector_t<double> even_sp2{sp2.GetEvenDegreeCoefficients()};
+  vector_t<double> even_sp3{sp3.GetEvenDegreeCoefficients()};
+
+  cout << "coef pares sp1= " << even_sp1;
+  cout << "coef pares sp2= " << even_sp2;
+  cout << "coef pares sp3= " << even_sp3;
+  cout << endl;
+
   return 0;
 }
