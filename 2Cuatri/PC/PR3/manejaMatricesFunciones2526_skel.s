@@ -365,7 +365,6 @@ cadFin:         .asciiz "\n\nTermina el programa\n"
 #$s5 = indCol
 
 
-
 	# double find_max(structMat* mat) {
 	#Parámetros de entrada:
 	#mat = $a0
@@ -451,7 +450,6 @@ find_max:
 		jr $ra
 	# }
 find_max__MARCAFIN:
-
 
 
 	# void procesa_cols(structMat* mat, int indC1, int indC2) {
@@ -631,6 +629,7 @@ intercambia__MARCAFIN:
 	#REGISTROS A UTILIZAR:
 	#temp1 = $f10
 	#temp2 = $f12
+	
 swap: 
 	#   double temp1 = *e1;
 		l.d $f10, 0($a0)
@@ -772,7 +771,6 @@ leeColumna:
 leeColumna__MARCAFIN:
 
 
-
 	# std::tuple<int, int> pideFilaYColumna(structMat* mat) {
 	#Parámetros de entrada: $a0
 
@@ -785,6 +783,7 @@ leeColumna__MARCAFIN:
 	#Registros a utilizar:
 	#indFil = $s4
 	#indCol = $s5
+
 pideFilaYColumna:
 
 	#PUSH: $ra, $s4, $s5, $s0
@@ -861,7 +860,6 @@ pideFilaYColumna:
 pideFilaYColumna__MARCAFIN:
 
 
-
 	# void change_elto(structMat* mat, int indF, int indC, double valor) {
 	#Parámetros de entrada:
 	#mat = $a0
@@ -878,6 +876,7 @@ pideFilaYColumna__MARCAFIN:
 	#t2 = datos
 	#t1 = Cálculo
 	#$f12 = valor
+
 change_elto:
 		#PUSH: $ra
 	addi $sp, $sp, -4
@@ -1015,8 +1014,6 @@ print_mat:
 	# }
 print_mat__MARCAFIN:
 
-
-
 	# int main() {
 main:
 	#   std::cout << std::setprecision(18); // Ignorar
@@ -1136,7 +1133,6 @@ main:
 						b switch_fin
 						
 				case1_fin:
-
 
 	#       // Opción 3 //////////////////////////////////////////////////////////
 	#       case 3:
